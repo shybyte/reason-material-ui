@@ -39,11 +39,11 @@ module MuiThemeProvider = {
 };
 
 module Dialog = {
-  let make ::onRequestClose ::isOpen ::title ::actions children =>
+  let make ::onRequestClose ::isOpen ::title=? ::actions children =>
     ReasonReact.wrapJsForReason
       reactClass::dialog
       props::{
-        "title": title,
+        "title": Js.Null_undefined.from_opt title,
         "onRequestClose": onRequestClose, 
         "open": Js.Boolean.to_js_boolean isOpen, 
         "actions": actions 

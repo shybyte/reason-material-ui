@@ -39,12 +39,13 @@ module MuiThemeProvider = {
 };
 
 module Dialog = {
-  let make ::onRequestClose ::isOpen ::actions children =>
+  let make ::onRequestClose ::isOpen ::title ::actions children =>
     ReasonReact.wrapJsForReason
       reactClass::dialog
       props::{
-        "onRequestClose": onRequestClose, /* OCaml string maps to JS string, no conversion needed here */
-        "open": Js.Boolean.to_js_boolean isOpen, /* OCaml string maps to JS string, no conversion needed here */
+        "title": title,
+        "onRequestClose": onRequestClose, 
+        "open": Js.Boolean.to_js_boolean isOpen, 
         "actions": actions 
       }
       children;

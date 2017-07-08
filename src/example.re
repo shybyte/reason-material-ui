@@ -1,32 +1,34 @@
 module ExamplePage = {
-  let component = ReasonReact.statefulComponent "Greeting";
   let se = ReasonReact.stringToElement;
-  let onClick () => Js.log "Hossa";
-  let make  _children => {
-    let click _event {ReasonReact.state: state} => ReasonReact.Update (state + 1);
+  type exampleAppState = {isDialogOpen: bool};
+  let component = ReasonReact.statefulComponent "Greeting";
+  let make _children => {
+    let toggleDialog _event {ReasonReact.state: state} =>
+      ReasonReact.Update {isDialogOpen: not state.isDialogOpen};
     {
       ...component,
-      initialState: fun () => 0,
+      initialState: fun () => {isDialogOpen: false},
       render: fun {state, update} => {
-        let greeting = {j|You've clicked the button $state times(s)!|j};
-        let okButton = <MaterialUi.FlatButton label="OK" onClick />;
-        let cancelButton = <MaterialUi.FlatButton label="Cancel" onClick />;
+        let toggleDialog = update toggleDialog;
+        let okButton = <MaterialUi.FlatButton label="OK" onClick=toggleDialog />;
+        let cancelButton = <MaterialUi.FlatButton label="Cancel" onClick=toggleDialog />;
         let actions = [|cancelButton, okButton|];
         <div>
           <MaterialUi.MuiThemeProvider>
             <div>
-              <MaterialUi.RaisedButton label="Button" onClick />
-              <MaterialUi.Dialog onRequestClose=onClick isOpen=true actions>
+              <MaterialUi.RaisedButton label="Open Dialog" onClick=toggleDialog />
+              <MaterialUi.Dialog
+                onRequestClose=toggleDialog isOpen=state.isDialogOpen title="Dialog Title" actions>
                 (se "Dialog Content")
               </MaterialUi.Dialog>
             </div>
           </MaterialUi.MuiThemeProvider>
-          <button onClick=(update click)> (ReasonReact.stringToElement greeting) </button>
         </div>
       }
     }
   };
 };
 
-MaterialUi.injectTapEventPlugin();
+MaterialUi.injectTapEventPlugin ();
+
 ReactDOMRe.renderToElementWithId <ExamplePage /> "index";
